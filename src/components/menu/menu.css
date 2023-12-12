@@ -1,0 +1,26 @@
+
+.containerButtons{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 30px;
+    place-items: center;
+    margin-top: 40px;
+}
+
+.containerButtons button{
+    width: 400px;
+    height: 120px;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid #91C9FF;
+    outline: none;
+    transition: 1s ease-in-out;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.containerButtons button:hover{
+    transition: 0.5s ease-in-out;
+    background: #4F95DA;
+}
