@@ -15,7 +15,7 @@ const AgregarPedido = () => {
     nombreCamiseta: '',
     fotos: [], // Cambiado a un array para manejar múltiples fotos
     diseñoChapa: '',
-    estado: 'recibido'
+    estado: 'RECIBIDO'
   });
 
   const [imagen, setImagen] = useState(null);
