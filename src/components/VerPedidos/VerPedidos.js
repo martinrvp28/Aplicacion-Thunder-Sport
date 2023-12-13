@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, deleteObject } from 'firebase/storage';
 import { db, storage } from '../firebase/database';
-import { generarPDF } from '../PdfGenerator/pdfgenerator';
 
 import './VerPedidos.css';
 
 const VerPedidos = () => {
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [seleccionados, setSeleccionados] = useState([]);
+  const [isSeleccionados, setIsSeleccionados] = useState(false);
 
   useEffect(() => {
-
     const obtenerPedidos = async () => {
       try {
         setLoading(true);
@@ -75,19 +75,19 @@ const VerPedidos = () => {
 
       // Obtener el pedido correspondiente
       const pedido = pedidos.find((p) => p.id === pedidoId);
-  
+
       // Verificar si el pedido existe y tiene un estado válido
       if (!pedido || !pedido.estado) {
         console.error('Pedido no encontrado o estado no válido.');
         return;
       }
-  
+
       // Determinar el nuevo estado en función del estado actual
       const nuevoEstado = pedido.estado === 'RECIBIDO' ? 'ENCARGADO' : 'RECIBIDO';
-  
+
       // Actualizar el estado en la base de datos
       await updateDoc(doc(db, 'pedidos', pedidoId), { estado: nuevoEstado });
-  
+
       // Actualizar localmente el estado del pedido
       setPedidos((prevPedidos) =>
         prevPedidos.map((p) => (p.id === pedidoId ? { ...p, estado: nuevoEstado } : p))
@@ -99,25 +99,76 @@ const VerPedidos = () => {
     }
   };
 
-  const generarPDFClickHandler = () => {
-    // Llama a la función generarPDF cuando se hace clic en el botón
-    generarPDF(pedidos);
+  const toggleSeleccionado = (pedido) => {
+    setSeleccionados((prevSeleccionados) => {
+      const pedidoEnSeleccionados = prevSeleccionados.find((p) => p.id === pedido.id);
+
+      if (pedidoEnSeleccionados) {
+        // Si el pedido ya está en seleccionados, quítalo
+        return prevSeleccionados.filter((p) => p.id !== pedido.id);
+      } else {
+        // Si el pedido no está en seleccionados, agrégalo
+        return [...prevSeleccionados, pedido];
+      }
+    });
   };
 
+  const manejarPedidosSeleccionados = () => {
+    console.log('Pedidos Seleccionados:', seleccionados);
+    // Puedes acceder a toda la información de los pedidos seleccionados aquí
+    // Por ejemplo, puedes mostrarlos en otra parte de la interfaz o realizar otras acciones
+    setIsSeleccionados(true);
+  };
 
-  if (loading===true){
-    return (<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>)
+  if (loading) {
+    return (
+      <div className="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    );
+  } else if ((isSeleccionados) && (seleccionados) ){
+    return (
+      <div>
+
+        <div className='containerPDF'>
+          {seleccionados.map((pedido, index) => (
+            <div key={index} className='pedidoSeleccionado'>
+              <img className="pdfImg" src={pedido.fotoURL} alt={`Foto del pedido ${index}`} />
+              <div className='infoPedido'>
+              
+              <p>Equipo: <span>{pedido.equipo}</span></p>
+              <p>Número en Camiseta: <span>{pedido.numeroCamiseta}</span></p>
+              <p>Nombre en Camiseta: <span>{pedido.nombreCamiseta}</span></p>
+
+              </div>
+              
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   } else {
-
     return (
       <div>
         <h1>Pedidos Registrados</h1>
-        <ul className='containerUl'>
+        <ul className="containerUl">
           {pedidos.map((pedido, index) => (
             <li key={index}>
-              <div className='containerInfo'>
+              <div className="containerInfo">
                 <div>
-                  <img className='prodImg' src={pedido.fotoURL} alt={`Foto del pedido ${index}`} />
+                  <input className='checkPedidos'
+                    type="checkbox"
+                    checked={seleccionados.some((p) => p.id === pedido.id)}
+                    onChange={() => toggleSeleccionado(pedido)}
+                  />
+                  <img className="prodImg" src={pedido.fotoURL} alt={`Foto del pedido ${index}`} />
                   <br />
                   Comprador: <strong>{pedido.comprador}</strong>
                   <br />
@@ -131,41 +182,34 @@ const VerPedidos = () => {
                   <br />
                   Nombre en Camiseta: <strong>{pedido.nombreCamiseta}</strong>
                   <br />
+                  Estado: <strong>{pedido.estado}</strong>
+                  {/* Agregar otras propiedades del pedido aquí */}
                 </div>
-                {/* Muestra la información de cada pedido, incluida la imagen */}
-  
-                {/* Agregar el botón de eliminar pedido */}
                 <button
-                  className='eliminarPedido'
+                  className="eliminarPedido"
                   onClick={() => eliminarPedido(pedido.id, pedido.fotoURL)}
                 >
                   Eliminar Pedido
                 </button>
-  
-                {/* Agregar el botón de cambiar estado */}
                 <button
-                  className='estadoFlotante'
-                  style={{ backgroundColor: pedido.estado === 'ENCARGADO' ? 'green' : 'rgb(230, 181, 92)',
-                  color: pedido.estado === 'ENCARGADO' ? 'white' : 'black' }}
-                  
-                  
+                  className="estadoFlotante"
+                  style={{
+                    backgroundColor:
+                      pedido.estado === 'ENCARGADO' ? 'green' : 'rgb(230, 181, 92)',
+                    color: pedido.estado === 'ENCARGADO' ? 'white' : 'black',
+                  }}
                   onClick={() => actualizarEstado(pedido.id)}
                 >
                   Estado: {pedido.estado}
                 </button>
-  
               </div>
             </li>
           ))}
         </ul>
-  
-        <button onClick={generarPDFClickHandler}>Generar PDF</button>
-  
+        <button className='buttonPDF' onClick={manejarPedidosSeleccionados}>Seleccionados a PDF</button>
       </div>
     );
-
   }
-
 };
 
 export default VerPedidos;

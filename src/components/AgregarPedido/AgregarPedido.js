@@ -2,7 +2,6 @@ import './agregarpedido.css';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/database';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { generarPDF } from '../PdfGenerator/pdfgenerator';
 
 import React, { useState } from 'react';
 

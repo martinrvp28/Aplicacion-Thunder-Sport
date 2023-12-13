@@ -52,3 +52,68 @@
     padding: 5px;
     font-weight: bold;
 }
+
+.containerPDF{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+.pdfImg{
+    width: 100%;
+}
+
+.pedidoSeleccionado{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.infoPedido{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.infoPedido span{
+    color: red;
+}
+
+.checkPedidos{
+    position: absolute;
+    right: 10px;
+    transform: scale(1.6);
+    border: solid red 2px;
+}
+
+.checkPedidos:checked {
+    border: 4px solid #4CAF50; /* Cambia el grosor y el color del borde cuando está marcado */
+  }
+
+  .buttonPDF{
+    margin: 30px;
+    width: 150px;
+    height: 50px;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid #91C9FF;
+    outline: none;
+    transition: 1s ease-in-out;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .buttonPDF:hover{
+    transition: 0.5s ease-in-out;
+    background: #4F95DA;
+}
