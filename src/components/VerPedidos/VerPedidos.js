@@ -131,6 +131,7 @@ const VerPedidos = () => {
         <div></div>
         <div></div>
         <div></div>
+        <img className='logoLoading' src='logoLoading.svg'></img>
       </div>
     );
   } else if ((isSeleccionados) && (seleccionados) ){

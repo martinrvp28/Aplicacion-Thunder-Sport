@@ -117,3 +117,10 @@
     transition: 0.5s ease-in-out;
     background: #4F95DA;
 }
+
+.logoLoading{
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    width: 60px;
+}
