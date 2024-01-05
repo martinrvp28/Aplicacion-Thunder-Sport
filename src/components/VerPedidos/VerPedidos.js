@@ -18,14 +18,32 @@ const VerPedidos = () => {
         const q = query(collection(db, 'pedidos'), orderBy('fecha'));
         const pedidosSnapshot = await getDocs(q);
         const pedidosData = [];
-
+  
         for (const doc of pedidosSnapshot.docs) {
           const pedido = doc.data();
-          const fotoURL = await getDownloadURL(ref(storage, pedido.fotos));
-          const pedidoConFoto = { ...pedido, fotoURL, id: doc.id };
+          let pedidoConFoto;
+  
+          // Verificar si el array de fotos está vacío
+          if (!pedido.fotos || pedido.fotos.length === 0) {
+            console.warn('El array de fotos está vacío en el pedido:', pedido);
+            // Si no hay fotos, asignar una imagen predeterminada
+            pedidoConFoto = { ...pedido, fotoURL: 'notimage.png', id: doc.id };
+          } else {
+            try {
+              const fotoURL = await getDownloadURL(ref(storage, pedido.fotos[0]));
+              // Si hay fotos, crear un objeto con el pedido y la URL de la foto
+              pedidoConFoto = { ...pedido, fotoURL, id: doc.id };
+            } catch (error) {
+              console.error('Error al obtener la URL de la foto:', error);
+              // Si hay un error, asignar una imagen predeterminada
+              pedidoConFoto = { ...pedido, fotoURL: 'notimage.png', id: doc.id };
+            }
+          }
+  
+          // Agregar el pedido (con o sin foto) al array
           pedidosData.push(pedidoConFoto);
         }
-
+  
         setPedidos(pedidosData);
         setLoading(false);
       } catch (error) {
@@ -33,13 +51,17 @@ const VerPedidos = () => {
         setLoading(false);
       }
     };
-
+  
     obtenerPedidos();
   }, []);
+  
+  
 
   const eliminarPedido = async (pedidoId, fotoNombre) => {
     try {
+      console.log(fotoNombre);
       setLoading(true);
+
       const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar este pedido?');
       if (!confirmacion) {
         return;
@@ -51,7 +73,9 @@ const VerPedidos = () => {
       }
 
       // Eliminar la imagen del storage
-      await deleteObject(ref(storage, fotoNombre));
+      if (fotoNombre!=='notimage.png'){
+        await deleteObject(ref(storage, fotoNombre));
+      }
 
       // Eliminar el pedido de la base de datos
       await deleteDoc(doc(db, 'pedidos', pedidoId));
@@ -147,6 +171,8 @@ const VerPedidos = () => {
               <p>Equipo: <span>{pedido.equipo}</span></p>
               <p>Número en Camiseta: <span>{pedido.numeroCamiseta}</span></p>
               <p>Nombre en Camiseta: <span>{pedido.nombreCamiseta}</span></p>
+              <p>Cantidad: <span>{pedido.cantidad}</span></p>
+              <p>Observaciones: <span>{pedido.observaciones}</span></p>
 
               </div>
               
@@ -183,8 +209,11 @@ const VerPedidos = () => {
                   <br />
                   Nombre en Camiseta: <strong>{pedido.nombreCamiseta}</strong>
                   <br />
-                  Estado: <strong>{pedido.estado}</strong>
-                  {/* Agregar otras propiedades del pedido aquí */}
+                  Cantidad: <strong>{pedido.cantidad}</strong>
+                  <br />
+                  Observaciones: <strong>{pedido.observaciones}</strong>
+                  
+                  
                 </div>
                 <button
                   className="eliminarPedido"

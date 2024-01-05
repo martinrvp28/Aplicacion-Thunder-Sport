@@ -16,6 +16,8 @@ const AgregarPedido = () => {
     fotos: [],
     diseñoChapa: '',
     estado: 'RECIBIDO',
+    cantidad: 0, // Nuevo campo 'cantidad'
+    observaciones: '', // Nuevo campo 'observaciones'
   });
 
   const [imagen, setImagen] = useState(null);
@@ -72,6 +74,8 @@ const AgregarPedido = () => {
         fotos: [],
         diseñoChapa: '',
         estado: 'RECIBIDO',
+        cantidad: 0, // Restablecer el valor de 'cantidad'
+        observaciones: '', // Restablecer el valor de 'observaciones'
       });
 
       // Setear loading a false después de completar el proceso
@@ -86,87 +90,100 @@ const AgregarPedido = () => {
     }
   };
 
-  if (loading===true){
-     return (<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>)
+  if (loading === true) {
+
+    return (
+      <div className="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <img className='logoLoading' src='logoLoading.svg'></img>
+      </div>
+    );
+    
   } else {
     return (
-
-    
-        <div>
-    
-            <h1>Agregar Pedido</h1>
-    
-            <form className='containerForm' onSubmit={handleSubmit}>
-    
-            <div className='containerDoubles'>
-                <div className='containerLabel'>
-                    <label>
-                        Comprador:
-                    </label>
-                    <input type="text" name="comprador" value={pedido.comprador} onChange={handleChange} />
-                </div>
-    
-                <div className='containerLabel'>
-                    <label>
-                        Número de Contacto:
-                    </label>
-                    <input type="text" name="numeroContacto" value={pedido.numeroContacto} onChange={handleChange} />
-                </div>
-                <div className='containerLabel'>
-                    <label>
-                        Instagram de Contacto:
-                    </label>
-                    <input type="text" name="instagramContacto" value={pedido.instagramContacto} onChange={handleChange} />
-                </div>
-            </div> 
-    
-            <div className='containerDoubles'>
-                <div className='containerLabel'>
-                    <label>
-                        Equipo:
-                    </label>
-                    <input type="text" name="equipo" value={pedido.equipo} onChange={handleChange} />
-                </div>
-    
-                <div className='containerLabel'>
-                    <label>
-                        Número en Camiseta:
-                    </label>
-                    <input type="text" name="numeroCamiseta" value={pedido.numeroCamiseta} onChange={handleChange} />
-                </div>
-    
-                <div className='containerLabel'>
-                    <label>
-                        Nombre en Camiseta:
-                    </label>
-                    <input type="text" name="nombreCamiseta" value={pedido.nombreCamiseta} onChange={handleChange} />
-                </div>
+      <div>
+        <h1>Agregar Pedido</h1>
+        <form className='containerForm' onSubmit={handleSubmit}>
+          <div className='containerDoubles'>
+            <div className='containerLabel'>
+              <label>
+                Comprador:
+              </label>
+              <input type="text" name="comprador" value={pedido.comprador} onChange={handleChange} />
             </div>
-    
-            <div className='containerDoubles'>
-                <div className='containerLabel'>
-                    <label>
-                        Fotos:
-                    </label>
-                    <input type="file" accept="image/*" onChange={handleImagenChange} />
-                </div>
-    
-                <div className='containerLabel'>
-                    <label>
-                        Diseño de Chapa:
-                    </label>
-                    <input type="text" name="diseñoChapa" value={pedido.disenoChapa} onChange={handleChange} />
-                </div>
+            <div className='containerLabel'>
+              <label>
+                Número de Contacto:
+              </label>
+              <input type="text" name="numeroContacto" value={pedido.numeroContacto} onChange={handleChange} />
             </div>
-    
-            <button type="submit">Agregar Pedido</button>
-    
-            </form>
-        </div>
-        );
+            <div className='containerLabel'>
+              <label>
+                Instagram de Contacto:
+              </label>
+              <input type="text" name="instagramContacto" value={pedido.instagramContacto} onChange={handleChange} />
+            </div>
+          </div>
+          <div className='containerDoubles'>
+            <div className='containerLabel'>
+              <label>
+                Equipo:
+              </label>
+              <input type="text" name="equipo" value={pedido.equipo} onChange={handleChange} />
+            </div>
+            <div className='containerLabel'>
+              <label>
+                Número en Camiseta:
+              </label>
+              <input type="text" name="numeroCamiseta" value={pedido.numeroCamiseta} onChange={handleChange} />
+            </div>
+            <div className='containerLabel'>
+              <label>
+                Nombre en Camiseta:
+              </label>
+              <input type="text" name="nombreCamiseta" value={pedido.nombreCamiseta} onChange={handleChange} />
+            </div>
+          </div>
+          <div className='containerDoubles'>
+            <div className='containerLabel'>
+              <label>
+                Fotos:
+              </label>
+              <input type="file" accept="image/*" onChange={handleImagenChange} />
+            </div>
+            <div className='containerLabel'>
+              <label>
+                Diseño de Chapa:
+              </label>
+              <input type="text" name="diseñoChapa" value={pedido.disenoChapa} onChange={handleChange} />
+            </div>
+          </div>
+          <div className='containerDoubles'>
+            <div className='containerLabel'>
+              <label>
+                Cantidad:
+              </label>
+              <input type="number" name="cantidad" value={pedido.cantidad} onChange={handleChange} />
+            </div>
+            <div className='containerLabel'>
+              <label>
+                Observaciones:
+              </label>
+              <input type="text" name="observaciones" value={pedido.observaciones} onChange={handleChange} />
+            </div>
+          </div>
+          <button type="submit">Agregar Pedido</button>
+        </form>
+      </div>
+    );
   }
-
-
 };
 
 export default AgregarPedido;
